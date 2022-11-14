@@ -1,4 +1,4 @@
-import 'package:calendar_app/screen/calendar_view_model.dart';
+import 'package:calendar_app/calendar_view_model.dart';
 import 'package:calendar_app/screen/component/custom_cupertinoActionSheet.dart';
 import 'package:calendar_app/screen/component/end_drum_roll.dart';
 import 'package:calendar_app/screen/component/start_drum_roll.dart';
