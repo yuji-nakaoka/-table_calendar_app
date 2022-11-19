@@ -1,4 +1,5 @@
 import 'package:calendar_app/calendar_view_model.dart';
+import 'package:calendar_app/screen/add_screen/add_view_model.dart';
 import 'package:calendar_app/screen/component/custom_alert_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -15,24 +16,7 @@ class CalenderScreen extends HookConsumerWidget {
     final dateFormatForDayOfWeek = DateFormat.E('ja');
     final calendarState = ref.watch(calenderViewModelProvider);
     final calendarAction = ref.read(calenderViewModelProvider.notifier);
-    // var tittleMonth =
-    //     "${calendarState.selectDay.year}年${calendarState.selectDay.month}月";
-    // var subDateTime = calendarState.selectDay.subtract(Duration(days: 31));
-    // var addDateTime = calendarState.selectDay.add(Duration(days: 31));
-
-    // //月のリスト
-    // final monthList = List.generate(
-    //     12,
-    //     (i) => DateTime.utc(calendarState.selectDay.year)
-    //         .add(Duration(days: 31 * i)));
-    // print(monthList);
-
-    // final list = [
-    //   "${subDateTime.year}年${subDateTime.month}月",
-    //   "${calendarState.selectDay.year}年${calendarState.selectDay.month}月",
-    //   "${addDateTime.year}年${addDateTime.month}月",
-    // ];
-
+    final addAction = ref.read(addViewModelProvider.notifier);
     return Scaffold(
       appBar: AppBar(
         title: Text('カレンダー'),
@@ -57,27 +41,12 @@ class CalenderScreen extends HookConsumerWidget {
                     },
                   ),
                 ),
-                // DropdownButton(
-                //   value: calendarState.dropdownTittle,
-                //   icon: const Icon(Icons.arrow_drop_down),
-                //   items: list.map((String list) {
-                //     // =>はインデント崩れるからオススメしないよ
-                //     // ,を入れた方が整形した時に見やすいよ
-                //     return DropdownMenuItem(value: list, child: Text(list));
-                //   }).toList(),
-                //   onChanged: (String? value) {
-                //     calendarAction.newDropdownTittle(value);
-                //   },
-                //   onTap: () {
-                //     debugPrint('ドロップダウンメニューアイテムがタップされたよ！');
-                //   },
-                // ),
               ],
             ),
             TableCalendar(
               startingDayOfWeek: StartingDayOfWeek.monday,
-              firstDay: DateTime.utc(now.year - 1, 1, 1),
-              lastDay: DateTime.utc(now.year + 1, 12, 31),
+              firstDay: DateTime.utc(now.year - 100, 1, 1),
+              lastDay: DateTime.utc(now.year + 100, 12, 31),
               focusedDay: calendarState.foucusDay,
               locale: 'ja_JP',
               headerStyle: HeaderStyle(
@@ -92,6 +61,12 @@ class CalenderScreen extends HookConsumerWidget {
               onDaySelected: (selectedDay, focusedDay) {
                 if (!isSameDay(calendarState.selectDay, selectedDay)) {
                   calendarAction.newSelectDay(selectedDay);
+                  //ドラムロールの値（scheduleState）を選んだ日にちと時間に変更
+                  addAction.newStartDate(selectedDay);
+                  addAction.newStartTime(now);
+                  addAction.newEndDate(selectedDay);
+                  //終了はプラス1時間している
+                  addAction.newEndTime(now.add(Duration(hours: 1)));
 
 //選んだ日の前日と後日
                   final tomorrow = selectedDay.add(Duration(days: 1));
@@ -136,6 +111,8 @@ class CalenderScreen extends HookConsumerWidget {
                       );
                     },
                   );
+                } else {
+                  ref.refresh(calenderViewModelProvider);
                 }
               },
               //イベントはMap形式で保持します。Mapオブジェクトのkeyは(DateTime, UTC)、valueは(List<String>) です。

@@ -98,6 +98,7 @@ class EditScreen extends HookConsumerWidget {
               tittle: '開始',
               selectData: selectData,
               initialDateTime: calendarState.startTime,
+              initialTime: calendarState.startTime,
             ),
           ),
           Padding(
@@ -109,6 +110,7 @@ class EditScreen extends HookConsumerWidget {
               tittle: '終了',
               selectData: selectData,
               initialDateTime: calendarState.endTime,
+              initialTime: calendarState.endTime,
             ),
           ),
           Padding(
