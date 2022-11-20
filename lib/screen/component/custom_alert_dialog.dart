@@ -1,3 +1,4 @@
+import 'package:calendar_app/repository/shared_preferences.dart';
 import 'package:calendar_app/screen/add_screen/add_screen.dart';
 import 'package:calendar_app/calendar_view_model.dart';
 import 'package:calendar_app/screen/edit_screen.dart';
@@ -16,6 +17,7 @@ class CustomAlertDialog extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final calendarAction = ref.read(calenderViewModelProvider.notifier);
+    final eventAction = ref.watch(sharedPreferencesProvider.notifier);
     return AlertDialog(
       insetPadding: EdgeInsets.all(8),
       title: Column(
@@ -52,17 +54,17 @@ class CustomAlertDialog extends HookConsumerWidget {
       content: Container(
         width: 300,
         height: 400,
-        child: calendarAction.getEventForDay(dateTime).length != 0
+        child: eventAction.getEventForDay(dateTime).length != 0
             ? ListView.builder(
-                itemCount: calendarAction.getEventForDay(dateTime).length,
+                itemCount: eventAction.getEventForDay(dateTime).length,
                 itemBuilder: (context, index) {
-                  final eventkey = calendarAction.getEventForDay(dateTime);
+                  final eventkey = eventAction.getEventForDay(dateTime);
                   return Column(
                     children: [
                       ListTile(
                         leading: Text('終日'),
                         title: Text(
-                          eventkey[index],
+                          eventkey[index]["tittle"],
                           overflow: TextOverflow.ellipsis,
                         ),
                         onTap: () {
@@ -71,7 +73,8 @@ class CustomAlertDialog extends HookConsumerWidget {
                             MaterialPageRoute(
                                 builder: (context) => EditScreen(
                                       selectData: dateTime,
-                                      tittle: eventkey[index],
+                                      tittle: eventkey[index]['tittle'],
+                                      body: eventkey[index]['body'],
                                     )),
                           );
                         },

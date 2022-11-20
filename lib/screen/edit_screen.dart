@@ -9,14 +9,16 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 class EditScreen extends HookConsumerWidget {
   final DateTime selectData;
   final String tittle;
+  final String body;
   EditScreen({
     required this.selectData,
     required this.tittle,
+    required this.body,
   });
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final tittleController = TextEditingController(text: tittle);
-    final bodyController = TextEditingController(text: '');
+    final bodyController = TextEditingController(text: body);
 
     final calendarState = ref.watch(calenderViewModelProvider);
     final calendarAction = ref.read(calenderViewModelProvider.notifier);

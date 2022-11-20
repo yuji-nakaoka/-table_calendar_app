@@ -14,6 +14,10 @@ T _$identity<T>(T value) => value;
 final _privateConstructorUsedError = UnsupportedError(
     'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#custom-getters-and-methods');
 
+ScheduleModel _$ScheduleModelFromJson(Map<String, dynamic> json) {
+  return _ScheduleModel.fromJson(json);
+}
+
 /// @nodoc
 mixin _$ScheduleModel {
   String? get tittle => throw _privateConstructorUsedError;
@@ -24,6 +28,7 @@ mixin _$ScheduleModel {
   DateTime get endTime => throw _privateConstructorUsedError;
   bool get allDay => throw _privateConstructorUsedError;
 
+  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
   $ScheduleModelCopyWith<ScheduleModel> get copyWith =>
       throw _privateConstructorUsedError;
@@ -170,7 +175,7 @@ class __$$_ScheduleModelCopyWithImpl<$Res>
 }
 
 /// @nodoc
-
+@JsonSerializable()
 class _$_ScheduleModel with DiagnosticableTreeMixin implements _ScheduleModel {
   const _$_ScheduleModel(
       {this.tittle,
@@ -180,6 +185,9 @@ class _$_ScheduleModel with DiagnosticableTreeMixin implements _ScheduleModel {
       required this.startTime,
       required this.endTime,
       this.allDay = false});
+
+  factory _$_ScheduleModel.fromJson(Map<String, dynamic> json) =>
+      _$$_ScheduleModelFromJson(json);
 
   @override
   final String? tittle;
@@ -233,6 +241,7 @@ class _$_ScheduleModel with DiagnosticableTreeMixin implements _ScheduleModel {
             (identical(other.allDay, allDay) || other.allDay == allDay));
   }
 
+  @JsonKey(ignore: true)
   @override
   int get hashCode => Object.hash(runtimeType, tittle, body, startDateTime,
       endDateTime, startTime, endTime, allDay);
@@ -242,6 +251,13 @@ class _$_ScheduleModel with DiagnosticableTreeMixin implements _ScheduleModel {
   @pragma('vm:prefer-inline')
   _$$_ScheduleModelCopyWith<_$_ScheduleModel> get copyWith =>
       __$$_ScheduleModelCopyWithImpl<_$_ScheduleModel>(this, _$identity);
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$$_ScheduleModelToJson(
+      this,
+    );
+  }
 }
 
 abstract class _ScheduleModel implements ScheduleModel {
@@ -253,6 +269,9 @@ abstract class _ScheduleModel implements ScheduleModel {
       required final DateTime startTime,
       required final DateTime endTime,
       final bool allDay}) = _$_ScheduleModel;
+
+  factory _ScheduleModel.fromJson(Map<String, dynamic> json) =
+      _$_ScheduleModel.fromJson;
 
   @override
   String? get tittle;

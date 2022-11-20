@@ -1,8 +1,7 @@
 import 'package:calendar_app/calendar_view_model.dart';
+import 'package:calendar_app/repository/shared_preferences.dart';
 import 'package:calendar_app/screen/add_screen/add_view_model.dart';
 import 'package:calendar_app/screen/component/custom_cupertinoActionSheet.dart';
-import 'package:calendar_app/screen/component/end_drum_roll.dart';
-import 'package:calendar_app/screen/component/start_drum_roll.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -14,8 +13,9 @@ class AddScreen extends HookConsumerWidget {
   });
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final prefAction = ref.watch(sharedPreferencesProvider.notifier);
     final addState = ref.watch(addViewModelProvider);
-    final addAction = ref.read(addViewModelProvider.notifier);
+    final addAction = ref.watch(addViewModelProvider.notifier);
     final tittleController = TextEditingController(text: '');
     final bodyController = TextEditingController(text: '');
     //開始のテキスト
@@ -58,7 +58,15 @@ class AddScreen extends HookConsumerWidget {
                 width: 70,
                 child: ElevatedButton(
                   onPressed: () {
-                    //Mapで保存
+                    prefAction.addSchedule(
+                        dateTime: addState.startDateTime,
+                        tittle: tittleController.text,
+                        body: bodyController.text,
+                        startDateTime: addState.startDateTime,
+                        endDateTime: addState.endDateTime,
+                        startTime: addState.startTime,
+                        endTime: addState.endTime);
+                    print('保存しました');
                   },
                   child: Text('保存'),
                   style: ElevatedButton.styleFrom(

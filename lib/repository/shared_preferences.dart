@@ -6,8 +6,9 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:table_calendar/table_calendar.dart';
 
-final sharedPreferencesProvider = Provider<SharedPreferencesRepository>(
-    (ref) => SharedPreferencesRepository());
+final sharedPreferencesProvider = StateNotifierProvider<
+        SharedPreferencesRepository, AsyncValue<Map<DateTime, dynamic>>>(
+    ((ref) => SharedPreferencesRepository()));
 
 Map<DateTime, List<ScheduleModel>> events = {
   DateTime.now(): [
@@ -22,38 +23,99 @@ Map<DateTime, List<ScheduleModel>> events = {
   ]
 };
 
+typedef EventLoader = List<dynamic> Function(DateTime day);
+
 // DateTime型から20210930の8桁のint型へ変換
 int _getHashCode(DateTime key) {
   return key.day * 1000000 + key.month * 10000 + key.year;
 }
 
-// final events = LinkedHashMap<DateTime, List<ScheduleModel>>(
-//   equals: isSameDay,
-//   hashCode: _getHashCode,
-// )..addAll(prefData);
+//新しく作ったmap
+Map<DateTime, dynamic> newEvents = {};
+var scheduleList = <ScheduleModel>[];
+
+final event = LinkedHashMap<DateTime, dynamic>(
+  equals: isSameDay,
+  hashCode: _getHashCode,
+)..addAll(newEvents);
 
 class SharedPreferencesRepository
-    extends StateNotifier<AsyncValue<Map<DateTime, List<ScheduleModel>>>> {
+    extends StateNotifier<AsyncValue<Map<DateTime, dynamic>>> {
   SharedPreferencesRepository() : super(AsyncValue.loading()) {
     fetchSchedule();
   }
 
+//データの取得
   Future<void> fetchSchedule() async {
     final prefs = await SharedPreferences.getInstance();
 
-    Map<DateTime, ScheduleModel?> decodeMap(Map<String, ScheduleModel?> map) {
-      Map<DateTime, ScheduleModel?> newMap = {};
+    Map<DateTime, dynamic> decodeMap(Map<String, dynamic> map) {
+      Map<DateTime, dynamic> newMap = {};
       map.forEach((key, value) {
         newMap[DateTime.parse(key)] = map[key];
       });
       return newMap;
     }
 
-    events = Map<DateTime, List<ScheduleModel>>.from(
-        decodeMap(json.decode(prefs.getString("events") ?? "{}")));
+    newEvents = Map<DateTime, dynamic>.from(
+      decodeMap(
+        json.decode(prefs.getString('events') ?? "{}"),
+      ),
+    );
 
-    print(events);
+    print(newEvents);
+    state = AsyncValue.data(newEvents);
+  }
 
-    state = AsyncValue.data(events);
+  List getEventForDay(DateTime day) {
+    return newEvents[day] ?? [];
+  }
+
+  EventLoader getLoader() {
+    return (DateTime day) {
+      //eventの中のday(dateTime)と紐づいているvalueを取り出している
+      //keyがない日にちはnullを返して空を返す
+      return newEvents[day] ?? [];
+    };
+  }
+
+  Future<void> addSchedule({
+    required DateTime dateTime,
+    required String tittle,
+    required String body,
+    required DateTime startDateTime,
+    required DateTime endDateTime,
+    required DateTime startTime,
+    required DateTime endTime,
+  }) async {
+    final prefs = await SharedPreferences.getInstance();
+
+    final data = ScheduleModel(
+        tittle: tittle,
+        body: body,
+        startDateTime: startDateTime,
+        endDateTime: endDateTime,
+        startTime: startTime,
+        endTime: endTime);
+
+    //これでMap<dateTime,[scheduleList]>がつくられる
+    scheduleList.add(data);
+    //[key]=valueで保存
+    newEvents[dateTime] = scheduleList;
+
+//これはstringに変換する関数
+    Map<String, dynamic> encodeMap(Map<DateTime, dynamic> map) {
+      Map<String, dynamic> newMap = {};
+      map.forEach((key, value) {
+        newMap[key.toString()] = map[key];
+      });
+      return newMap;
+    }
+
+    String encoded = json.encode(encodeMap(newEvents));
+    // print(encoded);
+    // print(prefs.getString('events') ?? "{}");
+
+    await prefs.setString('events', encoded);
   }
 }

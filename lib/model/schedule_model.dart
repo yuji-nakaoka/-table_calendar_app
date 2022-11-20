@@ -2,6 +2,7 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:flutter/foundation.dart';
 
 part 'schedule_model.freezed.dart';
+part 'schedule_model.g.dart';
 
 @freezed
 class ScheduleModel with _$ScheduleModel {
@@ -14,6 +15,9 @@ class ScheduleModel with _$ScheduleModel {
     required DateTime endTime,
     @Default(false) bool allDay,
   }) = _ScheduleModel;
+
+  factory ScheduleModel.fromJson(Map<String, dynamic> json) =>
+      _$ScheduleModelFromJson(json);
 
   factory ScheduleModel.initial() => ScheduleModel(
         tittle: '',
