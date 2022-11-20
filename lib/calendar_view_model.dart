@@ -1,32 +1,11 @@
-import 'dart:collection';
 import 'package:calendar_app/model/calender_model.dart';
-import 'package:calendar_app/model/event_list.dart';
-import 'package:calendar_app/model/schedule_model.dart';
-import 'package:calendar_app/repository/shared_preferences.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:riverpod/riverpod.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:table_calendar/table_calendar.dart';
 
 final calenderViewModelProvider =
     StateNotifierProvider<CalenderViewModel, CalenderModel>(
   (ref) => CalenderViewModel(),
 );
-
-final refs = FutureProvider<SharedPreferences>(
-    (_) async => await SharedPreferences.getInstance());
-
-typedef EventLoader = List<dynamic> Function(DateTime day);
-
-// DateTime型から20210930の8桁のint型へ変換
-int _getHashCode(DateTime key) {
-  return key.day * 1000000 + key.month * 10000 + key.year;
-}
-
-// final events = LinkedHashMap<DateTime, List<ScheduleModel>>(
-//   equals: isSameDay,
-//   hashCode: _getHashCode,
-// )..addAll(prefData);
 
 class CalenderViewModel extends StateNotifier<CalenderModel> {
   CalenderViewModel()
@@ -77,17 +56,5 @@ class CalenderViewModel extends StateNotifier<CalenderModel> {
                 child: child,
               ),
             ));
-  }
-
-  List getEventForDay(DateTime day) {
-    return events[day] ?? [];
-  }
-
-  EventLoader getLoader() {
-    return (DateTime day) {
-      //eventの中のday(dateTime)と紐づいているvalueを取り出している
-      //keyがない日にちはnullを返して空を返す
-      return events[day] ?? [];
-    };
   }
 }
