@@ -3,13 +3,15 @@ import 'dart:convert';
 
 import 'package:calendar_app/model/schedule_model.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:table_calendar/table_calendar.dart';
 
-final sharedPreferencesProvider = StateNotifierProvider<
+final sharedPreferencesProvider = StateNotifierProvider.autoDispose<
         SharedPreferencesRepository, AsyncValue<Map<DateTime, dynamic>>>(
     ((ref) => SharedPreferencesRepository()));
 
+//仮データ使う際は、eventに代入
 Map<DateTime, List<ScheduleModel>> events = {
   DateTime.now(): [
     ScheduleModel(
@@ -23,6 +25,8 @@ Map<DateTime, List<ScheduleModel>> events = {
   ]
 };
 
+final outputFormat = DateFormat('yyyy-MM-dd');
+
 typedef EventLoader = List<dynamic> Function(DateTime day);
 
 // DateTime型から20210930の8桁のint型へ変換
@@ -32,6 +36,7 @@ int _getHashCode(DateTime key) {
 
 //新しく作ったmap
 Map<DateTime, dynamic> newEvents = {};
+//ScheduleModelを入れるリスト
 var scheduleList = <ScheduleModel>[];
 
 final event = LinkedHashMap<DateTime, dynamic>(
@@ -45,7 +50,7 @@ class SharedPreferencesRepository
     fetchSchedule();
   }
 
-//データの取得
+//保存データの取得
   Future<void> fetchSchedule() async {
     final prefs = await SharedPreferences.getInstance();
 
@@ -63,14 +68,15 @@ class SharedPreferencesRepository
       ),
     );
 
-    print(newEvents);
     state = AsyncValue.data(newEvents);
   }
 
+//日程のリスト
   List getEventForDay(DateTime day) {
     return newEvents[day] ?? [];
   }
 
+//日程の取得
   EventLoader getLoader() {
     return (DateTime day) {
       //eventの中のday(dateTime)と紐づいているvalueを取り出している
@@ -79,6 +85,7 @@ class SharedPreferencesRepository
     };
   }
 
+//予定の追加
   Future<void> addSchedule({
     required DateTime dateTime,
     required String tittle,
@@ -87,6 +94,7 @@ class SharedPreferencesRepository
     required DateTime endDateTime,
     required DateTime startTime,
     required DateTime endTime,
+    required bool allDay,
   }) async {
     final prefs = await SharedPreferences.getInstance();
 
@@ -96,7 +104,8 @@ class SharedPreferencesRepository
         startDateTime: startDateTime,
         endDateTime: endDateTime,
         startTime: startTime,
-        endTime: endTime);
+        endTime: endTime,
+        allDay: allDay);
 
     //これでMap<dateTime,[scheduleList]>がつくられる
     scheduleList.add(data);
@@ -113,9 +122,12 @@ class SharedPreferencesRepository
     }
 
     String encoded = json.encode(encodeMap(newEvents));
-    // print(encoded);
-    // print(prefs.getString('events') ?? "{}");
-
     await prefs.setString('events', encoded);
+  }
+
+//予定の削除
+  Future<void> removeSchedule() async {
+    final prefs = await SharedPreferences.getInstance();
+    prefs.remove('events');
   }
 }

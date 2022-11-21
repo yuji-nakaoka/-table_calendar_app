@@ -1,10 +1,6 @@
-import 'dart:collection';
-import 'package:calendar_app/model/calender_model.dart';
-import 'package:calendar_app/model/event_list.dart';
 import 'package:calendar_app/model/schedule_model.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:riverpod/riverpod.dart';
-import 'package:table_calendar/table_calendar.dart';
 
 final addViewModelProvider = StateNotifierProvider<AddViewModel, ScheduleModel>(
   (ref) => AddViewModel(),

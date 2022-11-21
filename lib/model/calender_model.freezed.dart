@@ -18,11 +18,6 @@ final _privateConstructorUsedError = UnsupportedError(
 mixin _$CalenderModel {
   DateTime get selectDay => throw _privateConstructorUsedError;
   DateTime get foucusDay => throw _privateConstructorUsedError;
-  DateTime get startTime => throw _privateConstructorUsedError;
-  DateTime get endTime => throw _privateConstructorUsedError;
-  List<ScheduleModel>? get schedulesInMonth =>
-      throw _privateConstructorUsedError;
-  bool get allDay => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
   $CalenderModelCopyWith<CalenderModel> get copyWith =>
@@ -35,13 +30,7 @@ abstract class $CalenderModelCopyWith<$Res> {
           CalenderModel value, $Res Function(CalenderModel) then) =
       _$CalenderModelCopyWithImpl<$Res, CalenderModel>;
   @useResult
-  $Res call(
-      {DateTime selectDay,
-      DateTime foucusDay,
-      DateTime startTime,
-      DateTime endTime,
-      List<ScheduleModel>? schedulesInMonth,
-      bool allDay});
+  $Res call({DateTime selectDay, DateTime foucusDay});
 }
 
 /// @nodoc
@@ -59,10 +48,6 @@ class _$CalenderModelCopyWithImpl<$Res, $Val extends CalenderModel>
   $Res call({
     Object? selectDay = null,
     Object? foucusDay = null,
-    Object? startTime = null,
-    Object? endTime = null,
-    Object? schedulesInMonth = freezed,
-    Object? allDay = null,
   }) {
     return _then(_value.copyWith(
       selectDay: null == selectDay
@@ -73,22 +58,6 @@ class _$CalenderModelCopyWithImpl<$Res, $Val extends CalenderModel>
           ? _value.foucusDay
           : foucusDay // ignore: cast_nullable_to_non_nullable
               as DateTime,
-      startTime: null == startTime
-          ? _value.startTime
-          : startTime // ignore: cast_nullable_to_non_nullable
-              as DateTime,
-      endTime: null == endTime
-          ? _value.endTime
-          : endTime // ignore: cast_nullable_to_non_nullable
-              as DateTime,
-      schedulesInMonth: freezed == schedulesInMonth
-          ? _value.schedulesInMonth
-          : schedulesInMonth // ignore: cast_nullable_to_non_nullable
-              as List<ScheduleModel>?,
-      allDay: null == allDay
-          ? _value.allDay
-          : allDay // ignore: cast_nullable_to_non_nullable
-              as bool,
     ) as $Val);
   }
 }
@@ -101,13 +70,7 @@ abstract class _$$_CalenderModelCopyWith<$Res>
       __$$_CalenderModelCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call(
-      {DateTime selectDay,
-      DateTime foucusDay,
-      DateTime startTime,
-      DateTime endTime,
-      List<ScheduleModel>? schedulesInMonth,
-      bool allDay});
+  $Res call({DateTime selectDay, DateTime foucusDay});
 }
 
 /// @nodoc
@@ -123,10 +86,6 @@ class __$$_CalenderModelCopyWithImpl<$Res>
   $Res call({
     Object? selectDay = null,
     Object? foucusDay = null,
-    Object? startTime = null,
-    Object? endTime = null,
-    Object? schedulesInMonth = freezed,
-    Object? allDay = null,
   }) {
     return _then(_$_CalenderModel(
       selectDay: null == selectDay
@@ -137,22 +96,6 @@ class __$$_CalenderModelCopyWithImpl<$Res>
           ? _value.foucusDay
           : foucusDay // ignore: cast_nullable_to_non_nullable
               as DateTime,
-      startTime: null == startTime
-          ? _value.startTime
-          : startTime // ignore: cast_nullable_to_non_nullable
-              as DateTime,
-      endTime: null == endTime
-          ? _value.endTime
-          : endTime // ignore: cast_nullable_to_non_nullable
-              as DateTime,
-      schedulesInMonth: freezed == schedulesInMonth
-          ? _value._schedulesInMonth
-          : schedulesInMonth // ignore: cast_nullable_to_non_nullable
-              as List<ScheduleModel>?,
-      allDay: null == allDay
-          ? _value.allDay
-          : allDay // ignore: cast_nullable_to_non_nullable
-              as bool,
     ));
   }
 }
@@ -160,39 +103,16 @@ class __$$_CalenderModelCopyWithImpl<$Res>
 /// @nodoc
 
 class _$_CalenderModel with DiagnosticableTreeMixin implements _CalenderModel {
-  const _$_CalenderModel(
-      {required this.selectDay,
-      required this.foucusDay,
-      required this.startTime,
-      required this.endTime,
-      final List<ScheduleModel>? schedulesInMonth,
-      this.allDay = false})
-      : _schedulesInMonth = schedulesInMonth;
+  const _$_CalenderModel({required this.selectDay, required this.foucusDay});
 
   @override
   final DateTime selectDay;
   @override
   final DateTime foucusDay;
-  @override
-  final DateTime startTime;
-  @override
-  final DateTime endTime;
-  final List<ScheduleModel>? _schedulesInMonth;
-  @override
-  List<ScheduleModel>? get schedulesInMonth {
-    final value = _schedulesInMonth;
-    if (value == null) return null;
-    // ignore: implicit_dynamic_type
-    return EqualUnmodifiableListView(value);
-  }
-
-  @override
-  @JsonKey()
-  final bool allDay;
 
   @override
   String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
-    return 'CalenderModel(selectDay: $selectDay, foucusDay: $foucusDay, startTime: $startTime, endTime: $endTime, schedulesInMonth: $schedulesInMonth, allDay: $allDay)';
+    return 'CalenderModel(selectDay: $selectDay, foucusDay: $foucusDay)';
   }
 
   @override
@@ -201,11 +121,7 @@ class _$_CalenderModel with DiagnosticableTreeMixin implements _CalenderModel {
     properties
       ..add(DiagnosticsProperty('type', 'CalenderModel'))
       ..add(DiagnosticsProperty('selectDay', selectDay))
-      ..add(DiagnosticsProperty('foucusDay', foucusDay))
-      ..add(DiagnosticsProperty('startTime', startTime))
-      ..add(DiagnosticsProperty('endTime', endTime))
-      ..add(DiagnosticsProperty('schedulesInMonth', schedulesInMonth))
-      ..add(DiagnosticsProperty('allDay', allDay));
+      ..add(DiagnosticsProperty('foucusDay', foucusDay));
   }
 
   @override
@@ -216,18 +132,11 @@ class _$_CalenderModel with DiagnosticableTreeMixin implements _CalenderModel {
             (identical(other.selectDay, selectDay) ||
                 other.selectDay == selectDay) &&
             (identical(other.foucusDay, foucusDay) ||
-                other.foucusDay == foucusDay) &&
-            (identical(other.startTime, startTime) ||
-                other.startTime == startTime) &&
-            (identical(other.endTime, endTime) || other.endTime == endTime) &&
-            const DeepCollectionEquality()
-                .equals(other._schedulesInMonth, _schedulesInMonth) &&
-            (identical(other.allDay, allDay) || other.allDay == allDay));
+                other.foucusDay == foucusDay));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, selectDay, foucusDay, startTime,
-      endTime, const DeepCollectionEquality().hash(_schedulesInMonth), allDay);
+  int get hashCode => Object.hash(runtimeType, selectDay, foucusDay);
 
   @JsonKey(ignore: true)
   @override
@@ -239,24 +148,12 @@ class _$_CalenderModel with DiagnosticableTreeMixin implements _CalenderModel {
 abstract class _CalenderModel implements CalenderModel {
   const factory _CalenderModel(
       {required final DateTime selectDay,
-      required final DateTime foucusDay,
-      required final DateTime startTime,
-      required final DateTime endTime,
-      final List<ScheduleModel>? schedulesInMonth,
-      final bool allDay}) = _$_CalenderModel;
+      required final DateTime foucusDay}) = _$_CalenderModel;
 
   @override
   DateTime get selectDay;
   @override
   DateTime get foucusDay;
-  @override
-  DateTime get startTime;
-  @override
-  DateTime get endTime;
-  @override
-  List<ScheduleModel>? get schedulesInMonth;
-  @override
-  bool get allDay;
   @override
   @JsonKey(ignore: true)
   _$$_CalenderModelCopyWith<_$_CalenderModel> get copyWith =>

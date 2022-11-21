@@ -1,34 +1,39 @@
-import 'package:calendar_app/model/calender_model.dart';
+import 'package:calendar_app/model/schedule_model.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:riverpod/riverpod.dart';
 
-final calenderViewModelProvider =
-    StateNotifierProvider<CalenderViewModel, CalenderModel>(
-  (ref) => CalenderViewModel(),
+final editViewModelProvider =
+    StateNotifierProvider<EditViewModel, ScheduleModel>(
+  (ref) => EditViewModel(),
 );
 
-class CalenderViewModel extends StateNotifier<CalenderModel> {
-  CalenderViewModel()
-      : super(CalenderModel(
-          foucusDay: DateTime.now(),
-          selectDay: DateTime.now(),
-          startTime: DateTime.now(),
-          endTime: DateTime.now(),
-        ));
-
-//カレンダーの日にちがタップされた時にselectDayの値を変更
-  void newSelectDay(DateTime dt) {
-    state = state.copyWith(selectDay: dt);
-  }
+class EditViewModel extends StateNotifier<ScheduleModel> {
+  EditViewModel() : super(ScheduleModel.initial());
 
 //終日スイッチが押された時にtrue,falseの変更
   void changeAllDay(bool onChanged) {
     state = state.copyWith(allDay: onChanged);
   }
 
-//開始のドラムロールの値が変わった時の関数
+  //開始のドラムロールの値が変わった時の関数(年、月、日)
+  void newStartDate(DateTime dt) {
+    state = state.copyWith(
+      startDateTime: dt,
+    );
+  }
+
+//開始のドラムロールの値が変わった時の関数(時間)
   void newStartTime(DateTime dt) {
-    state = state.copyWith(startTime: dt);
+    state = state.copyWith(
+      startTime: dt,
+    );
+  }
+
+  //終了のドラムロールの値が変わった時の関数(年、月、日)
+  void newEndDate(DateTime dt) {
+    state = state.copyWith(
+      endDateTime: dt,
+    );
   }
 
 //終了のドラムロールの値が変わった時の関数

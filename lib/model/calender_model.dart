@@ -9,9 +9,5 @@ class CalenderModel with _$CalenderModel {
   const factory CalenderModel({
     required DateTime selectDay,
     required DateTime foucusDay,
-    required DateTime startTime,
-    required DateTime endTime,
-    List<ScheduleModel>? schedulesInMonth,
-    @Default(false) bool allDay,
   }) = _CalenderModel;
 }

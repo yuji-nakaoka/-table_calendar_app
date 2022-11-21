@@ -1,7 +1,7 @@
 import 'package:calendar_app/repository/shared_preferences.dart';
 import 'package:calendar_app/screen/add_screen/add_screen.dart';
-import 'package:calendar_app/calendar_view_model.dart';
-import 'package:calendar_app/screen/edit_screen.dart';
+import 'package:calendar_app/screen/calendar_screen/calendar_view_model.dart';
+import 'package:calendar_app/screen/edit_screen/edit_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
@@ -16,7 +16,6 @@ class CustomAlertDialog extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final calendarAction = ref.read(calenderViewModelProvider.notifier);
     final eventAction = ref.watch(sharedPreferencesProvider.notifier);
     return AlertDialog(
       insetPadding: EdgeInsets.all(8),
@@ -59,10 +58,25 @@ class CustomAlertDialog extends HookConsumerWidget {
                 itemCount: eventAction.getEventForDay(dateTime).length,
                 itemBuilder: (context, index) {
                   final eventkey = eventAction.getEventForDay(dateTime);
+                  //StringからDateTimeに変更
+                  final startTime = eventkey[index]['startTime'];
+                  final startText = DateTime.parse(startTime);
+                  final endTime = eventkey[index]['endTime'];
+                  final endText = DateTime.parse(endTime);
+                  final allDay = eventkey[index]['allDay'];
+                  print(allDay);
                   return Column(
                     children: [
                       ListTile(
-                        leading: Text('終日'),
+                        leading: allDay == true
+                            ? Text(
+                                '終日',
+                                style: TextStyle(fontSize: 15),
+                              )
+                            : Text(
+                                '${startText.hour}:${startText.minute}~${endText.hour}:${endText.minute}',
+                                style: TextStyle(fontSize: 15),
+                              ),
                         title: Text(
                           eventkey[index]["tittle"],
                           overflow: TextOverflow.ellipsis,
@@ -75,6 +89,13 @@ class CustomAlertDialog extends HookConsumerWidget {
                                       selectData: dateTime,
                                       tittle: eventkey[index]['tittle'],
                                       body: eventkey[index]['body'],
+                                      startDateTime: eventkey[index]
+                                          ['startDateTime'],
+                                      endDateTime: eventkey[index]
+                                          ['endDateTime'],
+                                      startTime: eventkey[index]['startTime'],
+                                      endTime: eventkey[index]['endTime'],
+                                      allday: eventkey[index]['allDay'],
                                     )),
                           );
                         },

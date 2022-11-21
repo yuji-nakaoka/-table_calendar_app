@@ -1,46 +1,66 @@
 import 'package:calendar_app/screen/calendar_screen/calendar_view_model.dart';
 import 'package:calendar_app/repository/shared_preferences.dart';
-import 'package:calendar_app/screen/add_screen/add_view_model.dart';
 import 'package:calendar_app/screen/component/custom_cupertinoActionSheet.dart';
 import 'package:calendar_app/screen/edit_screen/edit_view_model.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-class AddScreen extends HookConsumerWidget {
+class EditScreen extends HookConsumerWidget {
   final DateTime selectData;
-  AddScreen({
-    required this.selectData,
-  });
+  final String tittle;
+  final String body;
+  final String startDateTime;
+  final String endDateTime;
+  final String startTime;
+  final String endTime;
+  final bool allday;
+
+  EditScreen(
+      {required this.selectData,
+      required this.tittle,
+      required this.body,
+      required this.startDateTime,
+      required this.endDateTime,
+      required this.startTime,
+      required this.endTime,
+      required this.allday});
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final prefAction = ref.watch(sharedPreferencesProvider.notifier);
-    final addState = ref.watch(addViewModelProvider);
-    final addAction = ref.watch(addViewModelProvider.notifier);
-    final tittleController = TextEditingController();
-    final bodyController = TextEditingController();
+    final editState = ref.watch(editViewModelProvider);
+    final editAction = ref.watch(editViewModelProvider.notifier);
+    final tittleController = TextEditingController(text: tittle);
+    final bodyController = TextEditingController(text: body);
+    //jsonでStringで受け取った値をDateTimeに変換
+    final startDateTimeDt = DateTime.parse(startDateTime);
+    final endDateTimeDt = DateTime.parse(endDateTime);
+    final startTimeDt = DateTime.parse(startTime);
+    final endTimeDt = DateTime.parse(endTime);
+
     //開始のテキスト
     final startFalseText = TextEditingController(
         text:
-            '${addState.startDateTime.year}-${addState.startDateTime.month}-${addState.startDateTime.day} ${addState.startTime.hour}:${addState.startTime.minute}');
+            '${startDateTimeDt.year}-${startDateTimeDt.month}-${startDateTimeDt.day} ${startTimeDt.hour}:${startTimeDt.minute}');
     final stareTrueText = TextEditingController(
-      text:
-          '${addState.startDateTime.year}-${addState.startDateTime.month}-${addState.startDateTime.day} ',
-    );
+        text:
+            '${startDateTimeDt.year}-${startDateTimeDt.month}-${startDateTimeDt.day} ');
 //終了のテキスト
     final endFalseText = TextEditingController(
         text:
-            '${addState.endDateTime.year}-${addState.endDateTime.month}-${addState.endDateTime.day} ${addState.endTime.hour}:${addState.endTime.minute}');
+            '${endDateTimeDt.year}-${endDateTimeDt.month}-${endDateTimeDt.day} ${endTimeDt.hour}:${endTimeDt.minute}');
     final endTrueText = TextEditingController(
       text:
-          '${addState.endDateTime.year}-${addState.endDateTime.month}-${addState.endDateTime.day} ',
+          '${endDateTimeDt.year}-${endDateTimeDt.month}-${endDateTimeDt.day} ',
     );
+
     return Scaffold(
       backgroundColor: Color.fromARGB(237, 243, 243, 243),
       appBar: AppBar(
           leading: IconButton(
             onPressed: () {
-              tittleController.text == ''
+              tittleController.text == tittle
                   ? Navigator.of(context).popUntil((route) => route.isFirst)
                   : showCupertinoModalPopup(
                       context: context,
@@ -51,7 +71,7 @@ class AddScreen extends HookConsumerWidget {
             },
             icon: Icon(Icons.close),
           ),
-          title: Text('予定の追加'),
+          title: Text('予定の編集'),
           actions: <Widget>[
             Padding(
               padding: const EdgeInsets.all(8.0),
@@ -59,20 +79,7 @@ class AddScreen extends HookConsumerWidget {
                 width: 70,
                 child: ElevatedButton(
                   onPressed: () {
-                    prefAction.addSchedule(
-                        dateTime: addState.startDateTime,
-                        tittle: tittleController.text,
-                        body: bodyController.text,
-                        startDateTime: addState.startDateTime,
-                        endDateTime: addState.endDateTime,
-                        startTime: addState.startTime,
-                        endTime: addState.endTime,
-                        allDay: addState.allDay);
-                    ref.refresh(sharedPreferencesProvider);
-                    ref.refresh(addViewModelProvider);
-
-                    Navigator.of(context).popUntil((route) => route.isFirst);
-                    print('保存しました');
+                    print('sharedpreferencesは保存の編集ができない');
                   },
                   child: Text('保存'),
                   style: ElevatedButton.styleFrom(
@@ -111,9 +118,9 @@ class AddScreen extends HookConsumerWidget {
                   '終日',
                   style: TextStyle(fontSize: 15),
                 ),
-                value: addState.allDay,
+                value: editState.allDay,
                 onChanged: (bool newValue) {
-                  addAction.changeAllDay(newValue);
+                  editAction.changeAllDay(newValue);
                 },
               ),
             ),
@@ -132,8 +139,8 @@ class AddScreen extends HookConsumerWidget {
                   Text('開始'),
                   CupertinoButton(
                       onPressed: () {
-                        addState.allDay != true
-                            ? addAction.showDialog(
+                        editState.allDay != true
+                            ? editAction.showDialog(
                                 context: context,
                                 child: Flex(
                                   direction: Axis.horizontal,
@@ -150,7 +157,7 @@ class AddScreen extends HookConsumerWidget {
                                         use24hFormat: true,
                                         // ユーザーが dateTime を変更したときに呼び出されます。
                                         onDateTimeChanged: (DateTime newDate) {
-                                          addAction.newStartDate(newDate);
+                                          editAction.newStartDate(newDate);
                                         },
                                       ),
                                     ),
@@ -165,14 +172,14 @@ class AddScreen extends HookConsumerWidget {
                                         // ユーザーが dateTime を変更したときに呼び出されます。
                                         onDateTimeChanged:
                                             (DateTime newDateTime) {
-                                          addAction.newStartTime(newDateTime);
+                                          editAction.newStartTime(newDateTime);
                                         },
                                       ),
                                     ),
                                   ],
                                 ),
                               )
-                            : addAction.showDialog(
+                            : editAction.showDialog(
                                 context: context,
                                 child: CupertinoDatePicker(
                                   mode: CupertinoDatePickerMode.date,
@@ -184,13 +191,13 @@ class AddScreen extends HookConsumerWidget {
                                   use24hFormat: true,
                                   // ユーザーが dateTime を変更したときに呼び出されます。
                                   onDateTimeChanged: (DateTime newDate) {
-                                    addAction.newStartDate(newDate);
+                                    editAction.newStartDate(newDate);
                                   },
                                 ),
                               );
                       },
                       //終日スイッチがtrueかfalseかで変わる
-                      child: addState.allDay != true
+                      child: editState.allDay != true
                           ? SizedBox(
                               width: 180,
                               child: AbsorbPointer(
@@ -240,8 +247,8 @@ class AddScreen extends HookConsumerWidget {
                   Text('終了'),
                   CupertinoButton(
                       onPressed: () {
-                        addState.allDay != true
-                            ? addAction.showDialog(
+                        editState.allDay != true
+                            ? editAction.showDialog(
                                 context: context,
                                 child: Flex(
                                   direction: Axis.horizontal,
@@ -258,7 +265,7 @@ class AddScreen extends HookConsumerWidget {
                                         use24hFormat: true,
                                         // ユーザーが dateTime を変更したときに呼び出されます。
                                         onDateTimeChanged: (DateTime newDate) {
-                                          addAction.newEndDate(newDate);
+                                          editAction.newEndDate(newDate);
                                         },
                                       ),
                                     ),
@@ -273,14 +280,14 @@ class AddScreen extends HookConsumerWidget {
                                         // ユーザーが dateTime を変更したときに呼び出されます。
                                         onDateTimeChanged:
                                             (DateTime newDateTime) {
-                                          addAction.newEndTime(newDateTime);
+                                          editAction.newEndTime(newDateTime);
                                         },
                                       ),
                                     ),
                                   ],
                                 ),
                               )
-                            : addAction.showDialog(
+                            : editAction.showDialog(
                                 context: context,
                                 child: CupertinoDatePicker(
                                   mode: CupertinoDatePickerMode.date,
@@ -292,13 +299,13 @@ class AddScreen extends HookConsumerWidget {
                                   use24hFormat: true,
                                   // ユーザーが dateTime を変更したときに呼び出されます。
                                   onDateTimeChanged: (DateTime newDate) {
-                                    addAction.newEndDate(newDate);
+                                    editAction.newEndDate(newDate);
                                   },
                                 ),
                               );
                       },
                       //終日スイッチがtrueかfalseかで変わる
-                      child: addState.allDay != true
+                      child: editState.allDay != true
                           ? SizedBox(
                               width: 180,
                               child: AbsorbPointer(
@@ -345,6 +352,54 @@ class AddScreen extends HookConsumerWidget {
                   hintText: 'コメントを入力してください',
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(5),
+                  ),
+                ),
+              ),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Container(
+              width: double.infinity,
+              height: 50,
+              color: Colors.white,
+              child: Center(
+                child: TextButton(
+                  onPressed: () {
+                    showDialog(
+                        context: context,
+                        builder: (_) => CupertinoAlertDialog(
+                              title: Text("予定の削除"),
+                              content: Text("本当にこの日の予定を削除しますか？"),
+                              actions: [
+                                CupertinoDialogAction(
+                                    child: Text(
+                                      'キャンセル',
+                                      style: TextStyle(color: Colors.blue),
+                                    ),
+                                    isDestructiveAction: true,
+                                    onPressed: () {
+                                      Navigator.of(context).pop();
+                                    }),
+                                CupertinoDialogAction(
+                                  child: Text(
+                                    '削除',
+                                    style: TextStyle(color: Colors.blue),
+                                  ),
+                                  onPressed: () {
+                                    prefAction.removeSchedule();
+                                    ref.refresh(sharedPreferencesProvider);
+                                    Navigator.of(context)
+                                        .popUntil((route) => route.isFirst);
+                                    print('削除');
+                                  },
+                                )
+                              ],
+                            ));
+                  },
+                  child: Text(
+                    'この予定を削除',
+                    style: TextStyle(color: Colors.red),
                   ),
                 ),
               ),
