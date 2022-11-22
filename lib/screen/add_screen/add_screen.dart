@@ -1,13 +1,11 @@
-import 'package:calendar_app/screen/calendar_screen/calendar_view_model.dart';
 import 'package:calendar_app/repository/shared_preferences.dart';
 import 'package:calendar_app/screen/add_screen/add_view_model.dart';
 import 'package:calendar_app/screen/component/custom_cupertinoActionSheet.dart';
-import 'package:calendar_app/screen/edit_screen/edit_view_model.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-class AddScreen extends HookConsumerWidget {
+class AddScreen extends ConsumerWidget {
   final DateTime selectData;
   AddScreen({
     required this.selectData,
@@ -17,8 +15,6 @@ class AddScreen extends HookConsumerWidget {
     final prefAction = ref.watch(sharedPreferencesProvider.notifier);
     final addState = ref.watch(addViewModelProvider);
     final addAction = ref.watch(addViewModelProvider.notifier);
-    final tittleController = TextEditingController();
-    final bodyController = TextEditingController();
     //開始のテキスト
     final startFalseText = TextEditingController(
         text:
@@ -35,12 +31,23 @@ class AddScreen extends HookConsumerWidget {
       text:
           '${addState.endDateTime.year}-${addState.endDateTime.month}-${addState.endDateTime.day} ',
     );
+
+//保存ボタンのオンオフ
+//tittleの入力
+    final tittle = ref.watch(tittleProvider.state);
+    final isTittle = ref.watch(isTittleRequestingProvider.state);
+    print(isTittle);
+//bodyの入力
+    final body = ref.watch(bodyProvider.state);
+    final isbody = ref.watch(isBodyRequestingProvider.state);
+    print(isbody);
+
     return Scaffold(
       backgroundColor: Color.fromARGB(237, 243, 243, 243),
       appBar: AppBar(
           leading: IconButton(
             onPressed: () {
-              tittleController.text == ''
+              tittle.state.text == ''
                   ? Navigator.of(context).popUntil((route) => route.isFirst)
                   : showCupertinoModalPopup(
                       context: context,
@@ -58,22 +65,25 @@ class AddScreen extends HookConsumerWidget {
               child: SizedBox(
                 width: 70,
                 child: ElevatedButton(
-                  onPressed: () {
-                    prefAction.addSchedule(
-                        dateTime: addState.startDateTime,
-                        tittle: tittleController.text,
-                        body: bodyController.text,
-                        startDateTime: addState.startDateTime,
-                        endDateTime: addState.endDateTime,
-                        startTime: addState.startTime,
-                        endTime: addState.endTime,
-                        allDay: addState.allDay);
-                    ref.refresh(sharedPreferencesProvider);
-                    ref.refresh(addViewModelProvider);
+                  onPressed: isTittle.state || isbody.state
+                      ? null
+                      : () {
+                          prefAction.addSchedule(
+                              dateTime: addState.startDateTime,
+                              tittle: tittle.state.text,
+                              body: body.state.text,
+                              startDateTime: addState.startDateTime,
+                              endDateTime: addState.endDateTime,
+                              startTime: addState.startTime,
+                              endTime: addState.endTime,
+                              allDay: addState.allDay);
+                          ref.refresh(sharedPreferencesProvider);
+                          ref.refresh(addViewModelProvider);
 
-                    Navigator.of(context).popUntil((route) => route.isFirst);
-                    print('保存しました');
-                  },
+                          Navigator.of(context)
+                              .popUntil((route) => route.isFirst);
+                          print('保存しました');
+                        },
                   child: Text('保存'),
                   style: ElevatedButton.styleFrom(
                     primary: Colors.blueGrey, //ボタンの背景色
@@ -89,13 +99,20 @@ class AddScreen extends HookConsumerWidget {
             child: Container(
               color: Colors.white,
               child: TextField(
-                controller: tittleController,
+                controller: tittle.state,
                 decoration: InputDecoration(
                   hintText: 'タイトルを入力してください',
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(5),
                   ),
                 ),
+                onChanged: (data) {
+                  if (tittle.state.text.isNotEmpty) {
+                    isTittle.state = false;
+                  } else {
+                    isTittle.state = true;
+                  }
+                },
               ),
             ),
           ),
@@ -339,7 +356,7 @@ class AddScreen extends HookConsumerWidget {
             child: Container(
               color: Colors.white,
               child: TextField(
-                controller: bodyController,
+                controller: body.state,
                 maxLines: 6,
                 decoration: InputDecoration(
                   hintText: 'コメントを入力してください',
@@ -347,6 +364,13 @@ class AddScreen extends HookConsumerWidget {
                     borderRadius: BorderRadius.circular(5),
                   ),
                 ),
+                onChanged: (data) {
+                  if (body.state.text.isNotEmpty) {
+                    isbody.state = false;
+                  } else {
+                    isbody.state = true;
+                  }
+                },
               ),
             ),
           ),

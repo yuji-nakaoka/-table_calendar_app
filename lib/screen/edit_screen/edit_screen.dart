@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:calendar_app/screen/calendar_screen/calendar_view_model.dart';
 import 'package:calendar_app/repository/shared_preferences.dart';
 import 'package:calendar_app/screen/component/custom_cupertinoActionSheet.dart';
@@ -14,7 +16,7 @@ class EditScreen extends HookConsumerWidget {
   final String endDateTime;
   final String startTime;
   final String endTime;
-  final bool allday;
+  final bool allDay;
 
   EditScreen(
       {required this.selectData,
@@ -24,7 +26,7 @@ class EditScreen extends HookConsumerWidget {
       required this.endDateTime,
       required this.startTime,
       required this.endTime,
-      required this.allday});
+      required this.allDay});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -55,6 +57,25 @@ class EditScreen extends HookConsumerWidget {
           '${endDateTimeDt.year}-${endDateTimeDt.month}-${endDateTimeDt.day} ',
     );
 
+    //保存ボタンのオンオフ
+//tittleの入力
+    final isTittle = ref.watch(isTittleRequestingProvider.state);
+    print(isTittle.state);
+//bodyの入力
+    final isbody = ref.watch(isBodyRequestingProvider.state);
+    print(isbody.state);
+//開始の入力
+    final isStartDateTime = ref.watch(isStartDateTimeRequestingProvider.state);
+    print(isStartDateTime.state);
+//終了の入力
+    final isEndDateTime = ref.watch(isEndDateTimeRequestingProvider.state);
+    print(isEndDateTime.state);
+//終日の入力
+    final isAllDayRequestingProvider =
+        StateProvider.autoDispose((ref) => allDay);
+    final isAllDayTime = ref.watch(isAllDayRequestingProvider.state);
+    print(isAllDayTime.state);
+
     return Scaffold(
       backgroundColor: Color.fromARGB(237, 243, 243, 243),
       appBar: AppBar(
@@ -78,9 +99,14 @@ class EditScreen extends HookConsumerWidget {
               child: SizedBox(
                 width: 70,
                 child: ElevatedButton(
-                  onPressed: () {
-                    print('sharedpreferencesは保存の編集ができない');
-                  },
+                  onPressed: isTittle.state &&
+                          isbody.state &&
+                          isStartDateTime.state &&
+                          isEndDateTime.state
+                      ? null
+                      : () {
+                          print('sharedpreferencesは保存の編集ができない');
+                        },
                   child: Text('保存'),
                   style: ElevatedButton.styleFrom(
                     primary: Colors.blueGrey, //ボタンの背景色
@@ -103,6 +129,9 @@ class EditScreen extends HookConsumerWidget {
                     borderRadius: BorderRadius.circular(5),
                   ),
                 ),
+                onTap: () {
+                  isTittle.state = false;
+                },
               ),
             ),
           ),
@@ -118,9 +147,10 @@ class EditScreen extends HookConsumerWidget {
                   '終日',
                   style: TextStyle(fontSize: 15),
                 ),
-                value: editState.allDay,
+                value: isAllDayTime.state,
                 onChanged: (bool newValue) {
-                  editAction.changeAllDay(newValue);
+                  //   editAction.changeAllDay(newValue);
+                  isAllDayTime.state == newValue;
                 },
               ),
             ),
@@ -138,97 +168,99 @@ class EditScreen extends HookConsumerWidget {
                 children: <Widget>[
                   Text('開始'),
                   CupertinoButton(
-                      onPressed: () {
-                        editState.allDay != true
-                            ? editAction.showDialog(
-                                context: context,
-                                child: Flex(
-                                  direction: Axis.horizontal,
-                                  children: [
-                                    Flexible(
-                                      flex: 7,
-                                      child: CupertinoDatePicker(
-                                        mode: CupertinoDatePickerMode.date,
-                                        initialDateTime: DateTime.utc(
-                                          selectData.year,
-                                          selectData.month,
-                                          selectData.day,
-                                        ),
-                                        use24hFormat: true,
-                                        // ユーザーが dateTime を変更したときに呼び出されます。
-                                        onDateTimeChanged: (DateTime newDate) {
-                                          editAction.newStartDate(newDate);
-                                        },
+                    onPressed: () {
+                      isStartDateTime.state = false;
+                      allDay != true
+                          ? editAction.showDialog(
+                              context: context,
+                              child: Flex(
+                                direction: Axis.horizontal,
+                                children: [
+                                  Flexible(
+                                    flex: 7,
+                                    child: CupertinoDatePicker(
+                                      mode: CupertinoDatePickerMode.date,
+                                      initialDateTime: DateTime.utc(
+                                        selectData.year,
+                                        selectData.month,
+                                        selectData.day,
                                       ),
-                                    ),
-                                    Flexible(
-                                      flex: 3,
-                                      child: CupertinoDatePicker(
-                                        mode: CupertinoDatePickerMode.time,
-                                        minuteInterval: 15,
-                                        initialDateTime:
-                                            DateTime.utc(0, 0, 0, 0, 0),
-                                        use24hFormat: true,
-                                        // ユーザーが dateTime を変更したときに呼び出されます。
-                                        onDateTimeChanged:
-                                            (DateTime newDateTime) {
-                                          editAction.newStartTime(newDateTime);
-                                        },
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              )
-                            : editAction.showDialog(
-                                context: context,
-                                child: CupertinoDatePicker(
-                                  mode: CupertinoDatePickerMode.date,
-                                  initialDateTime: DateTime.utc(
-                                    selectData.year,
-                                    selectData.month,
-                                    selectData.day,
-                                  ),
-                                  use24hFormat: true,
-                                  // ユーザーが dateTime を変更したときに呼び出されます。
-                                  onDateTimeChanged: (DateTime newDate) {
-                                    editAction.newStartDate(newDate);
-                                  },
-                                ),
-                              );
-                      },
-                      //終日スイッチがtrueかfalseかで変わる
-                      child: editState.allDay != true
-                          ? SizedBox(
-                              width: 180,
-                              child: AbsorbPointer(
-                                child: TextFormField(
-                                  controller: startFalseText,
-                                  decoration: InputDecoration(
-                                    enabledBorder: InputBorder.none,
-                                    focusedBorder: InputBorder.none,
-                                    contentPadding: EdgeInsets.only(
-                                      bottom: 11,
+                                      use24hFormat: true,
+                                      // ユーザーが dateTime を変更したときに呼び出されます。
+                                      onDateTimeChanged: (DateTime newDate) {
+                                        editAction.newStartDate(newDate);
+                                      },
                                     ),
                                   ),
-                                  style: TextStyle(fontSize: 20),
-                                ),
+                                  Flexible(
+                                    flex: 3,
+                                    child: CupertinoDatePicker(
+                                      mode: CupertinoDatePickerMode.time,
+                                      minuteInterval: 15,
+                                      initialDateTime:
+                                          DateTime.utc(0, 0, 0, 0, 0),
+                                      use24hFormat: true,
+                                      // ユーザーが dateTime を変更したときに呼び出されます。
+                                      onDateTimeChanged:
+                                          (DateTime newDateTime) {
+                                        editAction.newStartTime(newDateTime);
+                                      },
+                                    ),
+                                  ),
+                                ],
                               ),
                             )
-                          : SizedBox(
-                              width: 180,
-                              child: AbsorbPointer(
-                                child: TextFormField(
-                                  controller: stareTrueText,
-                                  decoration: InputDecoration(
-                                    enabledBorder: InputBorder.none,
-                                    focusedBorder: InputBorder.none,
-                                    contentPadding:
-                                        EdgeInsets.only(bottom: 11, left: 50),
-                                  ),
-                                  style: TextStyle(fontSize: 20),
+                          : editAction.showDialog(
+                              context: context,
+                              child: CupertinoDatePicker(
+                                mode: CupertinoDatePickerMode.date,
+                                initialDateTime: DateTime.utc(
+                                  selectData.year,
+                                  selectData.month,
+                                  selectData.day,
                                 ),
+                                use24hFormat: true,
+                                // ユーザーが dateTime を変更したときに呼び出されます。
+                                onDateTimeChanged: (DateTime newDate) {
+                                  editAction.newStartDate(newDate);
+                                },
                               ),
-                            )),
+                            );
+                    },
+                    //終日スイッチがtrueかfalseかで変わる
+                    child: allDay != true
+                        ? SizedBox(
+                            width: 180,
+                            child: AbsorbPointer(
+                              child: TextFormField(
+                                controller: startFalseText,
+                                decoration: InputDecoration(
+                                  enabledBorder: InputBorder.none,
+                                  focusedBorder: InputBorder.none,
+                                  contentPadding: EdgeInsets.only(
+                                    bottom: 11,
+                                  ),
+                                ),
+                                style: TextStyle(fontSize: 20),
+                              ),
+                            ),
+                          )
+                        : SizedBox(
+                            width: 180,
+                            child: AbsorbPointer(
+                              child: TextFormField(
+                                controller: stareTrueText,
+                                decoration: InputDecoration(
+                                  enabledBorder: InputBorder.none,
+                                  focusedBorder: InputBorder.none,
+                                  contentPadding:
+                                      EdgeInsets.only(bottom: 11, left: 50),
+                                ),
+                                style: TextStyle(fontSize: 20),
+                              ),
+                            ),
+                          ),
+                  ),
                 ],
               ),
             ),
@@ -247,6 +279,7 @@ class EditScreen extends HookConsumerWidget {
                   Text('終了'),
                   CupertinoButton(
                       onPressed: () {
+                        isStartDateTime.state = false;
                         editState.allDay != true
                             ? editAction.showDialog(
                                 context: context,
@@ -305,7 +338,7 @@ class EditScreen extends HookConsumerWidget {
                               );
                       },
                       //終日スイッチがtrueかfalseかで変わる
-                      child: editState.allDay != true
+                      child: allDay != true
                           ? SizedBox(
                               width: 180,
                               child: AbsorbPointer(
@@ -354,6 +387,9 @@ class EditScreen extends HookConsumerWidget {
                     borderRadius: BorderRadius.circular(5),
                   ),
                 ),
+                onTap: () {
+                  isbody.state = false;
+                },
               ),
             ),
           ),

@@ -95,7 +95,7 @@ class CustomAlertDialog extends HookConsumerWidget {
                                           ['endDateTime'],
                                       startTime: eventkey[index]['startTime'],
                                       endTime: eventkey[index]['endTime'],
-                                      allday: eventkey[index]['allDay'],
+                                      allDay: eventkey[index]['allDay'],
                                     )),
                           );
                         },

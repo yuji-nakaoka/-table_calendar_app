@@ -63,3 +63,10 @@ class EditViewModel extends StateNotifier<ScheduleModel> {
             ));
   }
 }
+
+final isBodyRequestingProvider = StateProvider.autoDispose((ref) => true);
+final isTittleRequestingProvider = StateProvider.autoDispose((ref) => true);
+final isStartDateTimeRequestingProvider =
+    StateProvider.autoDispose((ref) => true);
+final isEndDateTimeRequestingProvider =
+    StateProvider.autoDispose((ref) => true);

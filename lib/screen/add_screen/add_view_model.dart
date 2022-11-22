@@ -62,3 +62,15 @@ class AddViewModel extends StateNotifier<ScheduleModel> {
             ));
   }
 }
+
+// tittleのテキストとbool
+final tittleProvider = StateProvider.autoDispose((ref) {
+  return TextEditingController();
+});
+final isTittleRequestingProvider = StateProvider.autoDispose((ref) => true);
+
+// bodyのテキストとbool
+final bodyProvider = StateProvider.autoDispose((ref) {
+  return TextEditingController();
+});
+final isBodyRequestingProvider = StateProvider.autoDispose((ref) => true);
