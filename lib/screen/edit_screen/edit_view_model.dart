@@ -2,6 +2,9 @@ import 'package:calendar_app/model/schedule_model.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:riverpod/riverpod.dart';
 
+//保存ボタンのオンオフ
+final isButtonRequestingProvider = StateProvider.autoDispose((ref) => true);
+
 final editViewModelProvider =
     Provider<StateNotifierProvider<EditViewModel, ScheduleModel>>(
         (ref) => throw UnimplementedError());
@@ -84,5 +87,3 @@ class EditViewModel extends StateNotifier<ScheduleModel> {
             ));
   }
 }
-
-final isButtonRequestingProvider = StateProvider.autoDispose((ref) => true);

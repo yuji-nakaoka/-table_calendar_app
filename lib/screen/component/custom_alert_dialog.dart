@@ -17,6 +17,7 @@ class CustomAlertDialog extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final eventAction = ref.watch(sharedPreferencesProvider.notifier);
     return AlertDialog(
+      elevation: 0,
       insetPadding: EdgeInsets.all(8),
       title: Column(
         children: [

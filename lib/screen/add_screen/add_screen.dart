@@ -1,5 +1,6 @@
 import 'package:calendar_app/repository/shared_preferences.dart';
 import 'package:calendar_app/screen/add_screen/add_view_model.dart';
+import 'package:calendar_app/screen/calendar_screen/calendar_view_model.dart';
 import 'package:calendar_app/screen/component/custom_cupertinoActionSheet.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -79,7 +80,7 @@ class AddScreen extends ConsumerWidget {
                               allDay: addState.allDay);
                           ref.refresh(sharedPreferencesProvider);
                           ref.refresh(addViewModelProvider);
-
+                          ref.refresh(isVisibleRequestingProvider.state);
                           Navigator.of(context)
                               .popUntil((route) => route.isFirst);
                           print('保存しました');

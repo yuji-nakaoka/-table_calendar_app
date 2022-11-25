@@ -43,7 +43,6 @@ class EditScreen extends HookConsumerWidget {
     final endTimeDt = DateTime.parse(endTime);
 
     //保存ボタンのオンオフ
-//bodyの入力
     final isButton = ref.watch(isButtonRequestingProvider.state);
 
     return ProviderScope(
