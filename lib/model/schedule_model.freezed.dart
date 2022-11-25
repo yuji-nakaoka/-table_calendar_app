@@ -20,8 +20,8 @@ ScheduleModel _$ScheduleModelFromJson(Map<String, dynamic> json) {
 
 /// @nodoc
 mixin _$ScheduleModel {
-  String get tittle => throw _privateConstructorUsedError;
-  String get body => throw _privateConstructorUsedError;
+  String? get tittle => throw _privateConstructorUsedError;
+  String? get body => throw _privateConstructorUsedError;
   DateTime get startDateTime => throw _privateConstructorUsedError;
   DateTime get endDateTime => throw _privateConstructorUsedError;
   DateTime get startTime => throw _privateConstructorUsedError;
@@ -41,8 +41,8 @@ abstract class $ScheduleModelCopyWith<$Res> {
       _$ScheduleModelCopyWithImpl<$Res, ScheduleModel>;
   @useResult
   $Res call(
-      {String tittle,
-      String body,
+      {String? tittle,
+      String? body,
       DateTime startDateTime,
       DateTime endDateTime,
       DateTime startTime,
@@ -63,8 +63,8 @@ class _$ScheduleModelCopyWithImpl<$Res, $Val extends ScheduleModel>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? tittle = null,
-    Object? body = null,
+    Object? tittle = freezed,
+    Object? body = freezed,
     Object? startDateTime = null,
     Object? endDateTime = null,
     Object? startTime = null,
@@ -72,14 +72,14 @@ class _$ScheduleModelCopyWithImpl<$Res, $Val extends ScheduleModel>
     Object? allDay = null,
   }) {
     return _then(_value.copyWith(
-      tittle: null == tittle
+      tittle: freezed == tittle
           ? _value.tittle
           : tittle // ignore: cast_nullable_to_non_nullable
-              as String,
-      body: null == body
+              as String?,
+      body: freezed == body
           ? _value.body
           : body // ignore: cast_nullable_to_non_nullable
-              as String,
+              as String?,
       startDateTime: null == startDateTime
           ? _value.startDateTime
           : startDateTime // ignore: cast_nullable_to_non_nullable
@@ -113,8 +113,8 @@ abstract class _$$_ScheduleModelCopyWith<$Res>
   @override
   @useResult
   $Res call(
-      {String tittle,
-      String body,
+      {String? tittle,
+      String? body,
       DateTime startDateTime,
       DateTime endDateTime,
       DateTime startTime,
@@ -133,8 +133,8 @@ class __$$_ScheduleModelCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? tittle = null,
-    Object? body = null,
+    Object? tittle = freezed,
+    Object? body = freezed,
     Object? startDateTime = null,
     Object? endDateTime = null,
     Object? startTime = null,
@@ -142,14 +142,14 @@ class __$$_ScheduleModelCopyWithImpl<$Res>
     Object? allDay = null,
   }) {
     return _then(_$_ScheduleModel(
-      tittle: null == tittle
+      tittle: freezed == tittle
           ? _value.tittle
           : tittle // ignore: cast_nullable_to_non_nullable
-              as String,
-      body: null == body
+              as String?,
+      body: freezed == body
           ? _value.body
           : body // ignore: cast_nullable_to_non_nullable
-              as String,
+              as String?,
       startDateTime: null == startDateTime
           ? _value.startDateTime
           : startDateTime // ignore: cast_nullable_to_non_nullable
@@ -178,8 +178,8 @@ class __$$_ScheduleModelCopyWithImpl<$Res>
 @JsonSerializable()
 class _$_ScheduleModel with DiagnosticableTreeMixin implements _ScheduleModel {
   const _$_ScheduleModel(
-      {required this.tittle,
-      required this.body,
+      {this.tittle,
+      this.body,
       required this.startDateTime,
       required this.endDateTime,
       required this.startTime,
@@ -190,9 +190,9 @@ class _$_ScheduleModel with DiagnosticableTreeMixin implements _ScheduleModel {
       _$$_ScheduleModelFromJson(json);
 
   @override
-  final String tittle;
+  final String? tittle;
   @override
-  final String body;
+  final String? body;
   @override
   final DateTime startDateTime;
   @override
@@ -261,8 +261,8 @@ class _$_ScheduleModel with DiagnosticableTreeMixin implements _ScheduleModel {
 
 abstract class _ScheduleModel implements ScheduleModel {
   const factory _ScheduleModel(
-      {required final String tittle,
-      required final String body,
+      {final String? tittle,
+      final String? body,
       required final DateTime startDateTime,
       required final DateTime endDateTime,
       required final DateTime startTime,
@@ -273,9 +273,9 @@ abstract class _ScheduleModel implements ScheduleModel {
       _$_ScheduleModel.fromJson;
 
   @override
-  String get tittle;
+  String? get tittle;
   @override
-  String get body;
+  String? get body;
   @override
   DateTime get startDateTime;
   @override

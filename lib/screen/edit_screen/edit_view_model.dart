@@ -3,17 +3,38 @@ import 'package:flutter/cupertino.dart';
 import 'package:riverpod/riverpod.dart';
 
 final editViewModelProvider =
-    StateNotifierProvider<EditViewModel, ScheduleModel>(
-  (ref) => EditViewModel(),
-);
+    Provider<StateNotifierProvider<EditViewModel, ScheduleModel>>(
+        (ref) => throw UnimplementedError());
+
+final editViewModelFamily =
+    StateNotifierProvider.family<EditViewModel, ScheduleModel, ScheduleModel>(
+        (ref, editViewModel) => EditViewModel(
+              fetchAllDay: editViewModel.allDay,
+              fetchEndDateTime: editViewModel.endDateTime,
+              fetchEndTime: editViewModel.endTime,
+              fetchStartDateTime: editViewModel.startDateTime,
+              fetchStartTime: editViewModel.startTime,
+            ));
 
 class EditViewModel extends StateNotifier<ScheduleModel> {
-  EditViewModel() : super(ScheduleModel.initial());
+  EditViewModel({
+    required bool fetchAllDay,
+    required DateTime fetchStartDateTime,
+    required DateTime fetchEndDateTime,
+    required DateTime fetchStartTime,
+    required DateTime fetchEndTime,
+  }) : super(ScheduleModel(
+            allDay: fetchAllDay,
+            startDateTime: fetchStartDateTime,
+            endDateTime: fetchEndDateTime,
+            startTime: fetchStartTime,
+            endTime: fetchEndTime));
 
-//終日スイッチが押された時にtrue,falseの変更
-  // void changeAllDay(bool onChanged) {
-  //   state = state.copyWith(allDay: onChanged);
-  // }
+  //ここで値を変える関数を書く
+  //終日スイッチが押された時にtrue,falseの変更
+  void changeAllDay(bool onChanged) {
+    state = state.copyWith(allDay: onChanged);
+  }
 
   //開始のドラムロールの値が変わった時の関数(年、月、日)
   void newStartDate(DateTime dt) {
@@ -41,7 +62,7 @@ class EditViewModel extends StateNotifier<ScheduleModel> {
     state = state.copyWith(endTime: dt);
   }
 
-//ドラムロールを表示するときの関数
+  //ドラムロールを表示するときの関数
   void showDialog({required BuildContext context, required Widget child}) {
     showCupertinoModalPopup<void>(
         context: context,
@@ -64,11 +85,4 @@ class EditViewModel extends StateNotifier<ScheduleModel> {
   }
 }
 
-final isFetchBodyRequestingProvider = StateProvider.autoDispose((ref) => true);
-final isFetchTittleRequestingProvider =
-    StateProvider.autoDispose((ref) => true);
-final isStartDateTimeRequestingProvider =
-    StateProvider.autoDispose((ref) => true);
-final isEndDateTimeRequestingProvider =
-    StateProvider.autoDispose((ref) => true);
-final isAllDayRequestingProvider = StateProvider.autoDispose((ref) => true);
+final isButtonRequestingProvider = StateProvider.autoDispose((ref) => true);

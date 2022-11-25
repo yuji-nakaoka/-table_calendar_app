@@ -1,9 +1,8 @@
-import 'package:calendar_app/model/fetch_all_day_model.dart';
+import 'package:calendar_app/model/schedule_model.dart';
 import 'package:calendar_app/repository/shared_preferences.dart';
-import 'package:calendar_app/screen/add_screen/add_view_model.dart';
 import 'package:calendar_app/screen/component/custom_cupertinoActionSheet.dart';
+
 import 'package:calendar_app/screen/edit_screen/edit_view_model.dart';
-import 'package:calendar_app/screen/fetch_data_view_model.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -32,62 +31,58 @@ class EditScreen extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    //sharedPreferencesの操作
     final prefAction = ref.watch(sharedPreferencesProvider.notifier);
-    final editState = ref.watch(editViewModelProvider);
-    final editAction = ref.watch(editViewModelProvider.notifier);
+    //タイトルと本文
     final tittleController = TextEditingController(text: tittle);
     final bodyController = TextEditingController(text: body);
-    //jsonでStringで受け取った値をDateTimeに変換
+    // jsonでStringで受け取った値をDateTimeに変換
     final startDateTimeDt = DateTime.parse(startDateTime);
     final endDateTimeDt = DateTime.parse(endDateTime);
     final startTimeDt = DateTime.parse(startTime);
     final endTimeDt = DateTime.parse(endTime);
 
-    //開始のテキスト
-    final startFalseText = TextEditingController(
-        text:
-            '${startDateTimeDt.year}-${startDateTimeDt.month}-${startDateTimeDt.day} ${startTimeDt.hour}:${startTimeDt.minute}');
-    final stareTrueText = TextEditingController(
-        text:
-            '${startDateTimeDt.year}-${startDateTimeDt.month}-${startDateTimeDt.day} ');
-//終了のテキスト
-    final endFalseText = TextEditingController(
-        text:
-            '${endDateTimeDt.year}-${endDateTimeDt.month}-${endDateTimeDt.day} ${endTimeDt.hour}:${endTimeDt.minute}');
-    final endTrueText = TextEditingController(
-      text:
-          '${endDateTimeDt.year}-${endDateTimeDt.month}-${endDateTimeDt.day} ',
-    );
-
     //保存ボタンのオンオフ
-//tittleの入力
-    final isFechTittle = ref.watch(isFetchTittleRequestingProvider.state);
-    //   print(isTittle.state);
 //bodyの入力
-    final isbody = ref.watch(isFetchBodyRequestingProvider.state);
-//    print(isbody.state);
-//開始の入力
-    final isStartDateTime = ref.watch(isStartDateTimeRequestingProvider.state);
-    //   print(isStartDateTime.state);
-//終了の入力
-    final isEndDateTime = ref.watch(isEndDateTimeRequestingProvider.state);
-    // print(isEndDateTime.state);
-//終日の入力
-    final isAllDayTime = ref.watch(isAllDayRequestingProvider.state);
-    //  print(isAllDayTime);
-    //スケジュール事のboolの値を管理
+    final isButton = ref.watch(isButtonRequestingProvider.state);
 
     return ProviderScope(
       overrides: [
-        fetchDataViewModelProvider
-            .overrideWith((ref) => fetchDataViewModelFamily(allDay)),
+        editViewModelProvider.overrideWith((ref) => editViewModelFamily(
+            ScheduleModel(
+                allDay: allDay,
+                startDateTime: startDateTimeDt,
+                endDateTime: endDateTimeDt,
+                endTime: endTimeDt,
+                startTime: startTimeDt))),
       ],
       child: Consumer(builder: (context, ref, _) {
-        //スケジュール事のboolの値を管理
-        final scheduleBool = ref.watch(fetchDataViewModelProvider);
+        //editViewModel
+        final scheduleProvider = ref.watch(editViewModelProvider);
+        final editAction = ref.watch(scheduleProvider.notifier);
         //familyのときはstateの取り方が違う
-        final fetchAlldayData = ref.watch(fetchDataViewModelFamily(allDay));
-        final boolAction = ref.watch(scheduleBool.notifier);
+        final fetchAllData = ref.watch(editViewModelFamily(ScheduleModel(
+          allDay: allDay,
+          startDateTime: startDateTimeDt,
+          endDateTime: endDateTimeDt,
+          endTime: endTimeDt,
+          startTime: startTimeDt,
+        )));
+        //開始のテキスト
+        final startFalseText = TextEditingController(
+            text:
+                '${fetchAllData.startDateTime.year}-${fetchAllData.startDateTime.month}-${fetchAllData.startDateTime.day} ${fetchAllData.startTime.hour}:${fetchAllData.startTime.minute}');
+        final stareTrueText = TextEditingController(
+            text:
+                '${fetchAllData.startDateTime.year}-${fetchAllData.startDateTime.month}-${fetchAllData.startDateTime.day} ');
+//終了のテキスト
+        final endFalseText = TextEditingController(
+            text:
+                '${fetchAllData.endDateTime.year}-${fetchAllData.endDateTime.month}-${fetchAllData.endDateTime.day} ${fetchAllData.endTime.hour}:${fetchAllData.endTime.minute}');
+        final endTrueText = TextEditingController(
+          text:
+              '${fetchAllData.endDateTime.year}-${fetchAllData.endDateTime.month}-${fetchAllData.endDateTime.day} ',
+        );
         return Scaffold(
           backgroundColor: Color.fromARGB(237, 243, 243, 243),
           appBar: AppBar(
@@ -112,10 +107,7 @@ class EditScreen extends HookConsumerWidget {
                     width: 70,
                     child: Consumer(builder: (context, ref, _) {
                       return ElevatedButton(
-                        onPressed: isFechTittle.state &&
-                                isbody.state &&
-                                isStartDateTime.state &&
-                                isEndDateTime.state
+                        onPressed: isButton.state
                             ? null
                             : () {
                                 print('sharedpreferencesは保存の編集ができない');
@@ -144,7 +136,7 @@ class EditScreen extends HookConsumerWidget {
                       ),
                     ),
                     onTap: () {
-                      isFechTittle.state == false;
+                      isButton.state = false;
                     },
                   ),
                 ),
@@ -161,9 +153,10 @@ class EditScreen extends HookConsumerWidget {
                       '終日',
                       style: TextStyle(fontSize: 15),
                     ),
-                    value: fetchAlldayData.fetchAllDay,
+                    value: fetchAllData.allDay,
                     onChanged: (bool newValue) {
-                      boolAction.changeAllDay(newValue);
+                      isButton.state = false;
+                      editAction.changeAllDay(newValue);
                     },
                   ),
                 ),
@@ -182,8 +175,8 @@ class EditScreen extends HookConsumerWidget {
                       Text('開始'),
                       CupertinoButton(
                         onPressed: () {
-                          isStartDateTime.state = false;
-                          fetchAlldayData.fetchAllDay != true
+                          isButton.state = false;
+                          fetchAllData.allDay != true
                               ? editAction.showDialog(
                                   context: context,
                                   child: Flex(
@@ -243,7 +236,7 @@ class EditScreen extends HookConsumerWidget {
                                 );
                         },
                         //終日スイッチがtrueかfalseかで変わる
-                        child: fetchAlldayData.fetchAllDay != true
+                        child: fetchAllData.allDay != true
                             ? SizedBox(
                                 width: 180,
                                 child: AbsorbPointer(
@@ -294,8 +287,8 @@ class EditScreen extends HookConsumerWidget {
                       Text('終了'),
                       CupertinoButton(
                           onPressed: () {
-                            isStartDateTime.state = false;
-                            fetchAlldayData.fetchAllDay != true
+                            isButton.state = false;
+                            fetchAllData.allDay != true
                                 ? editAction.showDialog(
                                     context: context,
                                     child: Flex(
@@ -355,7 +348,7 @@ class EditScreen extends HookConsumerWidget {
                                   );
                           },
                           //終日スイッチがtrueかfalseかで変わる
-                          child: fetchAlldayData.fetchAllDay != true
+                          child: fetchAllData.allDay != true
                               ? SizedBox(
                                   width: 180,
                                   child: AbsorbPointer(
@@ -405,7 +398,7 @@ class EditScreen extends HookConsumerWidget {
                       ),
                     ),
                     onTap: () {
-                      isbody.state = false;
+                      isButton.state = false;
                     },
                   ),
                 ),

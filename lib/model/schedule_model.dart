@@ -7,8 +7,8 @@ part 'schedule_model.g.dart';
 @freezed
 class ScheduleModel with _$ScheduleModel {
   const factory ScheduleModel({
-    required String tittle,
-    required String body,
+    String? tittle,
+    String? body,
     required DateTime startDateTime,
     required DateTime endDateTime,
     required DateTime startTime,

@@ -1,9 +1,6 @@
 import 'package:calendar_app/repository/shared_preferences.dart';
 import 'package:calendar_app/screen/add_screen/add_screen.dart';
-import 'package:calendar_app/screen/calendar_screen/calendar_view_model.dart';
 import 'package:calendar_app/screen/edit_screen/edit_screen.dart';
-import 'package:calendar_app/screen/edit_screen/edit_view_model.dart';
-import 'package:calendar_app/screen/fetch_data_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 

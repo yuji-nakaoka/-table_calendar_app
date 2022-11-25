@@ -8,8 +8,8 @@ part of 'schedule_model.dart';
 
 _$_ScheduleModel _$$_ScheduleModelFromJson(Map<String, dynamic> json) =>
     _$_ScheduleModel(
-      tittle: json['tittle'] as String,
-      body: json['body'] as String,
+      tittle: json['tittle'] as String?,
+      body: json['body'] as String?,
       startDateTime: DateTime.parse(json['startDateTime'] as String),
       endDateTime: DateTime.parse(json['endDateTime'] as String),
       startTime: DateTime.parse(json['startTime'] as String),
