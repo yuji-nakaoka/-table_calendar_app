@@ -11,9 +11,9 @@ class EditViewModel extends StateNotifier<ScheduleModel> {
   EditViewModel() : super(ScheduleModel.initial());
 
 //終日スイッチが押された時にtrue,falseの変更
-  void changeAllDay(bool onChanged) {
-    state = state.copyWith(allDay: onChanged);
-  }
+  // void changeAllDay(bool onChanged) {
+  //   state = state.copyWith(allDay: onChanged);
+  // }
 
   //開始のドラムロールの値が変わった時の関数(年、月、日)
   void newStartDate(DateTime dt) {
@@ -64,9 +64,11 @@ class EditViewModel extends StateNotifier<ScheduleModel> {
   }
 }
 
-final isBodyRequestingProvider = StateProvider.autoDispose((ref) => true);
-final isTittleRequestingProvider = StateProvider.autoDispose((ref) => true);
+final isFetchBodyRequestingProvider = StateProvider.autoDispose((ref) => true);
+final isFetchTittleRequestingProvider =
+    StateProvider.autoDispose((ref) => true);
 final isStartDateTimeRequestingProvider =
     StateProvider.autoDispose((ref) => true);
 final isEndDateTimeRequestingProvider =
     StateProvider.autoDispose((ref) => true);
+final isAllDayRequestingProvider = StateProvider.autoDispose((ref) => true);

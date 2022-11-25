@@ -2,6 +2,8 @@ import 'package:calendar_app/repository/shared_preferences.dart';
 import 'package:calendar_app/screen/add_screen/add_screen.dart';
 import 'package:calendar_app/screen/calendar_screen/calendar_view_model.dart';
 import 'package:calendar_app/screen/edit_screen/edit_screen.dart';
+import 'package:calendar_app/screen/edit_screen/edit_view_model.dart';
+import 'package:calendar_app/screen/fetch_data_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
@@ -64,7 +66,7 @@ class CustomAlertDialog extends HookConsumerWidget {
                   final endTime = eventkey[index]['endTime'];
                   final endText = DateTime.parse(endTime);
                   final allDay = eventkey[index]['allDay'];
-                  print(allDay);
+                  //   print(allDay);
                   return Column(
                     children: [
                       ListTile(
@@ -85,18 +87,17 @@ class CustomAlertDialog extends HookConsumerWidget {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => EditScreen(
-                                      selectData: dateTime,
-                                      tittle: eventkey[index]['tittle'],
-                                      body: eventkey[index]['body'],
-                                      startDateTime: eventkey[index]
-                                          ['startDateTime'],
-                                      endDateTime: eventkey[index]
-                                          ['endDateTime'],
-                                      startTime: eventkey[index]['startTime'],
-                                      endTime: eventkey[index]['endTime'],
-                                      allDay: eventkey[index]['allDay'],
-                                    )),
+                              builder: (context) => EditScreen(
+                                selectData: dateTime,
+                                tittle: eventkey[index]['tittle'],
+                                body: eventkey[index]['body'],
+                                startDateTime: eventkey[index]['startDateTime'],
+                                endDateTime: eventkey[index]['endDateTime'],
+                                startTime: eventkey[index]['startTime'],
+                                endTime: eventkey[index]['endTime'],
+                                allDay: eventkey[index]['allDay'],
+                              ),
+                            ),
                           );
                         },
                       ),

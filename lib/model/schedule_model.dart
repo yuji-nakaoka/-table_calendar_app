@@ -13,7 +13,7 @@ class ScheduleModel with _$ScheduleModel {
     required DateTime endDateTime,
     required DateTime startTime,
     required DateTime endTime,
-    @Default(false) bool allDay,
+    required bool allDay,
   }) = _ScheduleModel;
 
   factory ScheduleModel.fromJson(Map<String, dynamic> json) =>
@@ -26,5 +26,6 @@ class ScheduleModel with _$ScheduleModel {
         endDateTime: DateTime.now(),
         startTime: DateTime.utc(0, 0, 0, 0, 0),
         endTime: DateTime.utc(0, 0, 0, 1, 0),
+        allDay: false,
       );
 }

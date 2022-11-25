@@ -21,6 +21,7 @@ Map<DateTime, List<ScheduleModel>> events = {
       endDateTime: DateTime.now(),
       startTime: DateTime.utc(0, 0, 0, 0, 0),
       endTime: DateTime.utc(0, 0, 0, 1, 0),
+      allDay: true,
     )
   ]
 };

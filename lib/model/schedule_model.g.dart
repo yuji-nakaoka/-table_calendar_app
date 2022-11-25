@@ -14,7 +14,7 @@ _$_ScheduleModel _$$_ScheduleModelFromJson(Map<String, dynamic> json) =>
       endDateTime: DateTime.parse(json['endDateTime'] as String),
       startTime: DateTime.parse(json['startTime'] as String),
       endTime: DateTime.parse(json['endTime'] as String),
-      allDay: json['allDay'] as bool? ?? false,
+      allDay: json['allDay'] as bool,
     );
 
 Map<String, dynamic> _$$_ScheduleModelToJson(_$_ScheduleModel instance) =>

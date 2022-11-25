@@ -184,7 +184,7 @@ class _$_ScheduleModel with DiagnosticableTreeMixin implements _ScheduleModel {
       required this.endDateTime,
       required this.startTime,
       required this.endTime,
-      this.allDay = false});
+      required this.allDay});
 
   factory _$_ScheduleModel.fromJson(Map<String, dynamic> json) =>
       _$$_ScheduleModelFromJson(json);
@@ -202,7 +202,6 @@ class _$_ScheduleModel with DiagnosticableTreeMixin implements _ScheduleModel {
   @override
   final DateTime endTime;
   @override
-  @JsonKey()
   final bool allDay;
 
   @override
@@ -268,7 +267,7 @@ abstract class _ScheduleModel implements ScheduleModel {
       required final DateTime endDateTime,
       required final DateTime startTime,
       required final DateTime endTime,
-      final bool allDay}) = _$_ScheduleModel;
+      required final bool allDay}) = _$_ScheduleModel;
 
   factory _ScheduleModel.fromJson(Map<String, dynamic> json) =
       _$_ScheduleModel.fromJson;
